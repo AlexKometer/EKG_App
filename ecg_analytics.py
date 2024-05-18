@@ -10,4 +10,4 @@ import streamlit as st
 import os
 import json
 
-sampling_frequency = 1000
+sampling_frequency = 500 # Hz
