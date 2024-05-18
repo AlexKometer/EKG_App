@@ -15,9 +15,9 @@ from file_input import load_person_data, get_person_list, get_image_path, get_ec
 
 def ecg_plot(df_ecg_data):
     max_seconds = len(df_ecg_data) // 500
-    selected_area_start = 500 * st.number_input("Start of the selected area in seconds", min_value=0,
+    selected_area_start = 500 * st.number_input("Start of the selected area (in s) :", min_value=0,
                                                  max_value=max_seconds, value=0)
-    selected_area_end = (500 * st.number_input("End of the selected area in seconds", min_value=0,
+    selected_area_end = (500 * st.number_input("End of the selected area (in s) :", min_value=0,
                                                max_value=max_seconds, value=max_seconds))
 
     if selected_area_start < selected_area_end:
