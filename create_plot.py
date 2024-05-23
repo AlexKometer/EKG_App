@@ -23,10 +23,44 @@ def ecg_plot(df_ecg_data):
     if selected_area_start < selected_area_end:
         filtered_df_ecg = df_ecg_data.iloc[selected_area_start:selected_area_end]
         filtered_df_ecg["Zeit in s"] = filtered_df_ecg["Zeit in ms"] / 1000  # Scale x-axis to seconds
-        fig = px.line(filtered_df_ecg, x="Zeit in s", y="Messwerte in mV")
-        fig.update_layout(title="ECG Data", xaxis_title="Time in ms", yaxis_title="Voltage in mV")
+        fig_ecg = px.line(filtered_df_ecg, x="Zeit in s", y="Messwerte in mV")
+        fig_ecg.update_layout(title="ECG Data", xaxis_title="Time in ms", yaxis_title="Voltage in mV")
     else:
         st.error("Start value must be less than end value.")
-        fig = px.line()
+        fig_ecg = px.line()
 
-    return fig
+    return fig_ecg
+
+
+def mark_peaks(df_ecg_data, peaks):
+    max_seconds = len(df_ecg_data) // 500
+    selected_area_start = 500 * st.number_input("Start of the selected area (in s) :", min_value=0,
+                                                max_value=max_seconds, value=0)
+    selected_area_end = (500 * st.number_input("End of the selected area (in s) :", min_value=0,
+                                               max_value=max_seconds, value=max_seconds))
+
+    if selected_area_start < selected_area_end:
+        filtered_df_ecg = df_ecg_data.iloc[selected_area_start:selected_area_end]
+        filtered_df_ecg["Zeit in s"] = filtered_df_ecg["Zeit in ms"] / 1000  # Scale x-axis to seconds
+        fig_ecg_marked = px.line(filtered_df_ecg, x="Zeit in s", y="Messwerte in mV")
+        fig_ecg_marked.update_layout(title="ECG Data", xaxis_title="Time in ms", yaxis_title="Voltage in mV")
+    else:
+        st.error("Start value must be less than end value.")
+        fig_ecg_marked = px.line()
+
+    fig_ecg_marked.add_trace(go.Scatter(x=df_ecg_data.iloc[peaks[0]]["Zeit in ms"] /1000,
+                                        y=df_ecg_data.iloc[peaks[0]]["Messwerte in mV"],
+                                        mode="markers",
+                                        marker=dict(size=5, color="red"),
+                                        name="Peak"))
+
+    return fig_ecg_marked
+
+    """
+    fig_ecg_marked = ecg_plot(df_ecg_data)
+    fig_ecg_marked.add_trace(go.Scatter(x=df_ecg_data.iloc[peaks[0]]["Zeit in ms"] / 1000,
+                             y=df_ecg_data.iloc[peaks[0]]["Messwerte in mV"],
+                             mode="markers",
+                             marker=dict(size=5, color="red"),
+                             name="Peak"))
+    return fig_ecg_marked"""
