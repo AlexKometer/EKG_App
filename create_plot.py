@@ -14,8 +14,8 @@ from file_input import load_person_data, get_person_list, get_image_path, get_ec
 
 
 # Make ECG plot with the possibility to mark peaks
-def ecg_plot(df_ecg_data, peaks, checkbox_mark_peaks):
-    max_seconds = len(df_ecg_data) // 500
+def ecg_plot(df_ecg_data, peaks, checkbox_mark_peaks, sf):
+    max_seconds = len(df_ecg_data) // sf
     selected_area_start = 500 * st.number_input("Start of the selected area (in s) :", min_value=0,
                                                 max_value=max_seconds, value=0)
     selected_area_end = (500 * st.number_input("End of the selected area (in s) :", min_value=0,
@@ -25,18 +25,26 @@ def ecg_plot(df_ecg_data, peaks, checkbox_mark_peaks):
         filtered_df_ecg = df_ecg_data.iloc[selected_area_start:selected_area_end]
         filtered_df_ecg["Zeit in s"] = filtered_df_ecg["Zeit in ms"] / 1000  # Scale x-axis to seconds
         fig_ecg_marked = px.line(filtered_df_ecg, x="Zeit in s", y="Messwerte in mV")
-        fig_ecg_marked.update_layout(title="ECG Data", xaxis_title="Time in ms", yaxis_title="Voltage in mV")
+        fig_ecg_marked.update_layout(title="ECG Data", xaxis_title="Time in s", yaxis_title="Voltage in mV")
     else:
         st.error("Start value must be less than end value.")
         fig_ecg_marked = px.line()
 
     if checkbox_mark_peaks:
-        fig_ecg_marked.add_trace(go.Scatter(x=df_ecg_data.iloc[peaks[0]]["Zeit in ms"] / 1000,
-                                            y=df_ecg_data.iloc[peaks[0]]["Messwerte in mV"],
-                                            mode="markers",
-                                            marker=dict(size=5, color="red"),
-                                            name="Peak"))
-        st.write("MARKED PEAKS")
+        # Extract the indices of the peaks
+        peak_indices = peaks[0]
+        # Filter peaks within the selected range
+        filtered_peaks = [peak for peak in peak_indices if selected_area_start <= peak < selected_area_end]
+        if filtered_peaks:
+            peak_times = df_ecg_data.iloc[filtered_peaks]["Zeit in ms"].to_numpy() / 1000
+            peak_values = df_ecg_data.iloc[filtered_peaks]["Messwerte in mV"].to_numpy()
+
+            fig_ecg_marked.add_trace(go.Scatter(x=peak_times,
+                                                y=peak_values,
+                                                mode="markers",
+                                                marker=dict(size=10, color="red"),
+                                                name="Peak"))
+            st.write("MARKED PEAKS")
     else:
         pass
 

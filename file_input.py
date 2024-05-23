@@ -32,6 +32,11 @@ def get_image_path(person_data, person_name):
             return entry["picture_path"]
     return None
 
+def get_sex(person_data, person_name):
+    for entry in person_data:
+        if person_name == entry["lastname"] + ", " + entry["firstname"]:
+            return entry["sex"]
+    return None
 
 def get_year_of_birth(person_dict, current_user):
     for person in person_dict:

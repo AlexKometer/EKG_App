@@ -12,9 +12,9 @@ import time
 import json
 
 from file_input import load_person_data, get_person_list, get_image_path, get_ecg_path, read_ecg_data, \
-    calculate_person_age, get_year_of_birth, get_ekg_test_date
+    calculate_person_age, get_year_of_birth, get_ekg_test_date, get_sex
 from create_plot import ecg_plot
-from ecg_analytics import peak_detection, calculate_hr_data
+from ecg_analytics import peak_detection, calculate_hr_data, estimated_max_hr
 
 # streamlit run D:\Python_Programme\EKG_App\main.py   --> AK StandPC
 
@@ -23,25 +23,18 @@ from ecg_analytics import peak_detection, calculate_hr_data
 person_dict = load_person_data()
 person_names = get_person_list(person_dict)
 
-
+sf = 500
 
 # Streamlit settings
 st.set_page_config(layout="wide")
 st.title("ECG-APP")
-
-
 
 # Sidebar
 st.sidebar.header("Navigation")
 current_user = st.sidebar.radio('Subject:', options=person_names, key="sbVersuchsperson")
 checkbox_mark_peaks = st.sidebar.checkbox("Mark Peaks", value=False, key="cbMarkPeaks")
 
-
-
-
-
-
-tab1, tab2, tab3 = st.tabs([current_user, "ECG", "Tab 3"])
+tab1, tab2, tab3 = st.tabs([current_user, "ECG", "HR Analysis"])
 with tab1:
     st.write("#### General Information:", current_user)
     image = Image.open(get_image_path(person_dict, current_user))
@@ -65,20 +58,29 @@ with tab2:
     selected_ecg_path = st.selectbox('ECG:', options=ecg_path, key="sbECG")
     df_ecg_data = read_ecg_data(selected_ecg_path)
     peaks = peak_detection(selected_ecg_path)
-    st.plotly_chart(ecg_plot(df_ecg_data, peaks, checkbox_mark_peaks))
+    st.plotly_chart(ecg_plot(df_ecg_data, peaks, checkbox_mark_peaks, sf))
 
     st.write("This ecg was recorded on: ", test_date[ecg_path.index(selected_ecg_path)])
 
 with tab3:
     st.write("This is tab 3")
+    hr, hr_max, hr_min, hr_mean = calculate_hr_data(peak_detection(selected_ecg_path))
+
+    st.write("The maximum heart rate is: ", hr_max)
+    st.write("The minimum heart rate is: ", hr_min)
+    st.write("The mean heart rate is: ", hr_mean)
+#    st.write("The heart rate over the entire time is: ", hr)
+    st.write("The estimated maximum heart rate is: ",
+             estimated_max_hr(calculate_person_age(person_dict, current_user), get_sex(person_dict, current_user)))
+
 
 # TODO MUST DO
 #  Geburtsjahr, Name und Bild der Personen wird angezeigt (2pkt) --> Done
 #  Auswahlmöglichkeit für Tests, sofern mehr als ein Test bei einer Person vorliegt (4pkt) --> Done
 #  Anzeigen des Testdatums und der gesamtem Länge der Zeitreihe in Sekunden (4pkt) --> Done
 #  EKG-Daten werden beim Einlesen sinnvoll resampelt, um Ladezeiten zu verkürzen (2pkt) --> Done
-#  Sinnvolle Berechnung der Herzrate über den gesamten Zeitraum wird angezeigt (2pkt)
-#  Nutzer:in kann sinnvollen Zeitbereich für Plots auswählen (2pkt)
+#  Sinnvolle Berechnung der Herzrate über den gesamten Zeitraum wird angezeigt (2pkt) --> Done
+#  Nutzer:in kann sinnvollen Zeitbereich für Plots auswählen (2pkt) --> Done
 #  Stil z.B. Namenskonventionen, sinnvolle Aufteilung in Module, Objektorientierung (4pkt)
 #  Kommentare und Docstrings (2pkt)
 #  Design für Computer Bildschirm optimiert und optisch ansprechend (2pkt)
@@ -90,11 +92,8 @@ with tab3:
 #  Neue Daten mit einem Nutzer verknüpfen (4pkt)
 #  Nutzer und Test-Daten editierbar machen (4pkt)
 #  Daten in einer SQLite oder tinyDB speichern (6pkt)
-#  Gefundene Peaks im Plot anzeigen (2pkt)
+#  Gefundene Peaks im Plot anzeigen (2pkt) --> Done
 #  Herzrate im sinnvollen gleitenden Durchschnitt als Plot anzeigen (2pkt)
-#  Ausrechnen des Maximalpuls basierend auf Alter. Anzeige im Dashboard (1pkt)
+#  Ausrechnen des Maximalpuls basierend auf Alter. Anzeige im Dashboard (1pkt) --> Done
 #  Herzratenvariabilität anzeigen (2pkt)
 #  Weitere eigene: Vorzustellen in Pitch-Sessiona
-
-# TODO Done
-#
