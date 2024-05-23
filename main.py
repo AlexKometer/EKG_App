@@ -17,6 +17,7 @@ from create_plot import ecg_plot
 from ecg_analytics import peak_detection, calculate_hr_data, estimated_max_hr
 
 # streamlit run D:\Python_Programme\EKG_App\main.py   --> AK StandPC
+# streamlit run /Users/alexanderkometer/git/EKG_App/main.py   --> AK MacBook
 
 
 # Load basic data
