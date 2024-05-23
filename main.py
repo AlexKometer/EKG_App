@@ -13,7 +13,7 @@ import json
 
 from file_input import load_person_data, get_person_list, get_image_path, get_ecg_path, read_ecg_data, \
     calculate_person_age, get_year_of_birth, get_ekg_test_date
-from create_plot import ecg_plot, mark_peaks
+from create_plot import ecg_plot
 from ecg_analytics import peak_detection, calculate_hr_data
 
 # streamlit run D:\Python_Programme\EKG_App\main.py   --> AK StandPC
@@ -65,11 +65,7 @@ with tab2:
     selected_ecg_path = st.selectbox('ECG:', options=ecg_path, key="sbECG")
     df_ecg_data = read_ecg_data(selected_ecg_path)
     peaks = peak_detection(selected_ecg_path)
-
-    if checkbox_mark_peaks:
-        st.plotly_chart(mark_peaks(df_ecg_data, peaks))
-    else:
-        st.plotly_chart(ecg_plot(df_ecg_data))
+    st.plotly_chart(ecg_plot(df_ecg_data, peaks, checkbox_mark_peaks))
 
     st.write("This ecg was recorded on: ", test_date[ecg_path.index(selected_ecg_path)])
 
