@@ -44,7 +44,6 @@ def ecg_plot(df_ecg_data, peaks, checkbox_mark_peaks, sf):
                                                 mode="markers",
                                                 marker=dict(size=10, color="red"),
                                                 name="Peak"))
-            st.write("MARKED PEAKS")
     else:
         pass
 
