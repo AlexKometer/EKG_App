@@ -108,3 +108,9 @@ else:
 #  Ausrechnen des Maximalpuls basierend auf Alter. Anzeige im Dashboard (1pkt) --> Done
 #  Herzratenvariabilität anzeigen (2pkt)
 #  Weitere eigene: Vorzustellen in Pitch-Sessiona
+
+# TODO Ideas:
+#  zugriff beim bearbeiten begrenzen, Stammdaten können nicht angefasst werden, ebenfalls löschen
+#  es soill möglich sein das eine neue person kein ekg hat (überspringung seite 3)
+#  adding ecg
+#

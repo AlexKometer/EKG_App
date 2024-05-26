@@ -1,1 +1,0 @@
-Sampling Frequenz der EKG-Messung sollte 500 sein nicht 1000
