@@ -16,7 +16,7 @@ from file_input import read_ecg_data
 
 
 # Function to detect peaks in the ECG data, Output is an array of heart rates
-def peak_detection(path):
+"""def peak_detection(path):
     df = read_ecg_data(path)
     peaks = sc.signal.find_peaks(df["Messwerte in mV"], height=350)
 
@@ -42,5 +42,5 @@ def estimated_max_hr(age, sex):
         max_hr_calc = 226 - 1.0 * age
 
     return max_hr_calc
-
+"""
 

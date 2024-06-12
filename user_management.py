@@ -1,8 +1,8 @@
 import streamlit as st
 import json
 import os
-from file_input import load_person_data
-
+#from file_input import load_person_data
+from classes import Person
 # Save data back to the JSON file
 def save_data(data):
     with open("data/person_db.json", 'w') as file:
@@ -63,7 +63,7 @@ if 'file_info' not in st.session_state:
     st.session_state.file_info = []
 
 # Load existing data
-data = load_person_data()
+data = Person.load_person_data()
 
 # Functions to reset the state
 def reset_state():
@@ -73,6 +73,7 @@ def reset_state():
     st.session_state.file_info = []
 
 def new_user():
+
     st.write(f"Entering new_user function, current step: {st.session_state.step}")
 
     # Step 1: Add basic information

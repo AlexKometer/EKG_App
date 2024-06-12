@@ -10,15 +10,16 @@ from PIL import Image
 import os
 import time
 import json
-
-from file_input import load_person_data, get_person_list, get_image_path, get_ecg_path, read_ecg_data, calculate_person_age, get_year_of_birth, get_ekg_test_date, get_sex
-from create_plot import ecg_plot
-from ecg_analytics import peak_detection, calculate_hr_data, estimated_max_hr
-from user_management import new_user, reset_state
+from classes import Person
+from ecgdata import  EKGdata
+#from file_input import load_person_data, get_person_list, get_image_path, get_ecg_path, read_ecg_data, calculate_person_age, get_year_of_birth, get_ekg_test_date, get_sex
+#from create_plot import ecg_plot
+#from ecg_analytics import peak_detection, calculate_hr_data, estimated_max_hr
+from user_management import new_user
 
 # Load basic data
-person_dict = load_person_data()
-person_names = get_person_list(person_dict)
+person_dict = Person.load_person_data()
+person_names = Person.get_person_list(person_dict)
 
 sf = 500
 
@@ -29,7 +30,9 @@ st.title("ECG-APP")
 # Sidebar
 st.sidebar.header("Navigation")
 current_user = st.sidebar.radio('Subject:', options=person_names, key="sbVersuchsperson")
-
+for entry in person_dict:
+    if current_user == entry["lastname"] + ", " + entry["firstname"]:
+        username = Person(entry)
 button_new_user = st.sidebar.button("New User", key="btnNewUser")
 button_edit_user = st.sidebar.button("Edit User", key="btnEditUser")
 button_delete_user = st.sidebar.button("Delete User 🗑️", key="btnDeleteUser")
@@ -50,11 +53,21 @@ else:
     tab1, tab2, tab3 = st.tabs([current_user, "ECG", "HR Analysis"])
     with tab1:
         st.write("#### General Information:", current_user)
-        image = Image.open(get_image_path(person_dict, current_user))
+
+        image = Image.open(username.get_image_path())
         st.image(image, caption=current_user)
-        st.write("The Year of Birth is: ", get_year_of_birth(person_dict, current_user))
-        st.write("The age of the subject is: ", calculate_person_age(person_dict, current_user))
-        ecg_path = get_ecg_path(person_dict, current_user)
+        st.write("The Year of Birth is: ", username.date_of_birth)
+        st.write("The age of the subject is: ", username.calculate_person_age())
+
+
+
+
+
+
+
+
+
+        """HIER""" ecg_path = get_ecg_path(person_dict, current_user)
         test_date = get_ekg_test_date(person_dict, current_user)
         st.write("")
         st.write("### Number of ECGs: ", len(ecg_path))
@@ -112,5 +125,5 @@ else:
 # TODO Ideas:
 #  zugriff beim bearbeiten begrenzen, Stammdaten können nicht angefasst werden, ebenfalls löschen
 #  es soill möglich sein das eine neue person kein ekg hat (überspringung seite 3)
-#  adding ecg
+#  adding ecg, User Login
 #

@@ -11,7 +11,7 @@ import os
 from datetime import datetime
 import json
 
-
+"""
 def load_person_data():
     file = open("data/person_db.json")
     person_data = json.load(file)
@@ -59,7 +59,7 @@ def get_ecg_path(person_data, person_name):
             return [test["result_link"] for test in entry["ekg_tests"]]
     return []
 
-
+#in EKG-Klasse. Fehlt noch
 def get_ekg_test_date(person_data, person_name):
     for entry in person_data:
         if person_name == entry["lastname"] + ", " + entry["firstname"]:
@@ -75,7 +75,9 @@ def read_ecg_data(ecg_path):
     return df_ecg_data
 
 
+#Nicht in verwendung
 def read_power_data(power_path):
     df_power_data = pd.read_csv(power_path, sep="\t", header=None)
 
     return df_power_data
+"""
