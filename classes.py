@@ -23,7 +23,7 @@ class Person:
     @staticmethod
     def find_person_data_by_id(suchstring):
         """ Eine Funktion der Nachname, Vorname als ein String übergeben wird
-        und die die Person als Dictionary zurück gibt"""
+        und die Person als Dictionary zurück gibt"""
 
         person_data = Person.load_person_data()
 
